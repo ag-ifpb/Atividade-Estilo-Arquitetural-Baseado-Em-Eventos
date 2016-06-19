@@ -25,9 +25,9 @@ import java.util.logging.Logger;
  */
 public class TopicController implements Runnable {
 
-    private List<Socket> topicPublishers = new ArrayList<>();
-    private HashSet<Topic> controlledTopics = new LinkedHashSet<>();
-    private Queue<byte[]> topicBuffer = new LinkedList<>();
+    private List<Socket>    topicPublishers     = new ArrayList<>();
+    private HashSet<Topic>  controlledTopics    = new LinkedHashSet<>();
+    private Queue<byte[]>   topicBuffer         = new LinkedList<>();
 
     private Thread notificationThread;
 
