@@ -3,7 +3,6 @@ import java.io.IOException;
 import java.net.InetAddress;
 import java.net.InetSocketAddress;
 import java.net.Socket;
-import java.net.SocketAddress;
 import java.net.UnknownHostException;
 
 /*
@@ -18,8 +17,6 @@ import java.net.UnknownHostException;
 public class LoaderNode1 {
 
     public static void main(String[] args) throws UnknownHostException, IOException, InterruptedException {
-
-        InetAddress inetAddress = InetAddress.getLocalHost();
 
         Socket socket = new Socket();
         socket.setReuseAddress(true);

@@ -5,7 +5,6 @@
  */
 package ifpb.pod.barramento.server;
 
-import ifpb.pod.barramento.topic.Topic;
 import ifpb.pod.barramento.topic.TopicManager;
 import java.io.IOException;
 import java.net.InetSocketAddress;

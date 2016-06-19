@@ -1,6 +1,5 @@
 
 import java.io.IOException;
-import java.net.InetAddress;
 import java.net.InetSocketAddress;
 import java.net.Socket;
 import java.net.UnknownHostException;
@@ -18,11 +17,9 @@ public class LoaderNode4 {
 
     public static void main(String[] args) throws UnknownHostException, IOException, InterruptedException {
 
-//        Socket socket = new Socket("localhost", 40999);//, inetAddress, 40995);
-//        Socket socket = new Socket("localhost", 40999);
         Socket socket = new Socket();
         socket.setReuseAddress(true);
-//        socket.bind(new InetSocketAddress("192.168.2.108", 40995));
+
         socket.bind(new InetSocketAddress("localhost", 40995));
 
         socket.connect(new InetSocketAddress("localhost", 40999));
