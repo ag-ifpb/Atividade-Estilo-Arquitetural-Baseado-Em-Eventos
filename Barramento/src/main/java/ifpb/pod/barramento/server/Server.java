@@ -6,6 +6,7 @@
 package ifpb.pod.barramento.server;
 
 import ifpb.pod.barramento.topic.Topic;
+import ifpb.pod.barramento.topic.TopicManager;
 import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.net.ServerSocket;
@@ -18,15 +19,11 @@ import java.net.Socket;
 public class Server {
     
     private ServerSocket serverSocket;
-    private Topic topic1;
-    private Topic topic2;
-    private Topic topic3;
+    private TopicManager topicManager;
     
     public Server(){
         
-        topic1 = new Topic();
-        topic2 = new Topic();
-        topic3 = new Topic();
+        topicManager = new TopicManager();
     }
     
     public void turnOn() throws IOException {
@@ -59,29 +56,7 @@ public class Server {
                 
                 Socket clientSocket = serverSocket.accept();
                 
-                switch (clientSocket.getPort()) {
-                    
-                    case 40998: {
-                        topic1.setPublisherNode(clientSocket);
-                    }
-                    break;
-                    case 40997: {
-                        topic3.setPublisherNode(clientSocket);
-                        topic2.setPublisherNode(clientSocket);
-                    }
-                    break;
-                    case 40996: {
-                        topic1.registerNode(clientSocket);
-                        topic3.registerNode(clientSocket);
-                    }
-                    break;
-                    case 40995: {
-                        topic1.registerNode(clientSocket);
-                        topic2.registerNode(clientSocket);
-                    }
-                    break;
-                    
-                }
+                topicManager.registerSocketRequest(clientSocket);
                 
             } catch (IOException ex) {
                 ex.printStackTrace();

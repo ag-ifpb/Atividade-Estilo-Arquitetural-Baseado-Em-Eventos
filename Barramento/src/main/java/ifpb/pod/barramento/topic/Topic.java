@@ -6,95 +6,47 @@
 package ifpb.pod.barramento.topic;
 
 import java.io.IOException;
-import java.io.InputStream;
 import java.net.Socket;
 import java.util.ArrayList;
 import java.util.Iterator;
-import java.util.LinkedList;
 import java.util.List;
-import java.util.Queue;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import sun.net.www.content.text.plain;
 
 /**
  *
  * @author Victor Hugo <victor.hugo.origins@gmail.com>
  */
-public class Topic extends Thread {
+public class Topic {
 
-    private Socket publisherNode;
-    private final Queue<byte[]> topicBuffer;
-    private final List<Socket> registeredNodes;
+    private List<Socket> registeredNodes = new ArrayList<>();
 
-    public Topic() {
-        super();
+    private final String topicType;
 
-        topicBuffer = new LinkedList<>();
-        registeredNodes = new ArrayList<>();
+    public Topic(String topicType) {
+
+        this.topicType = topicType;
     }
 
-    public Topic(Socket publisherNode) {
+    public void notifyNodes(byte[] message) throws IOException {
 
-        super();
+        StringBuilder sb = new StringBuilder();
+        sb.append("Messagem from: ");
+        sb.append(topicType);
+        sb.append(":\n ");
+        sb.append(new String(message));
 
-        topicBuffer = new LinkedList<>();
-        registeredNodes = new ArrayList<>();
-        this.publisherNode = publisherNode;
-    }
+        message = sb.toString().getBytes();
 
-    @Override
-    public void run() {
-
-        try {
-
-            InputStream inPublisherNode = publisherNode.getInputStream();
-
-            byte[] receivedMessage;
-
-            while (publisherNode != null && publisherNode.isConnected()) {
-
-                if (inPublisherNode.available() > 0) {
-
-                    receivedMessage = new byte[inPublisherNode.available()];
-
-                    topicBuffer.offer(receivedMessage);
-
-                    notifyNodes();
-                    
-                    System.out.println("notifiquei com isso: "+new String(receivedMessage));
-                }
-
-                sleep(100);
-            }
-
-        } catch (IOException | InterruptedException ex) {
-            Logger.getLogger(Topic.class.getName()).log(Level.SEVERE, null, ex);
-        }
-
-    }
-
-    private void notifyNodes() throws IOException {
-
-        Iterator<byte[]> itTopicBuffer = topicBuffer.iterator();
         Iterator<Socket> itRegisteredNodes = registeredNodes.iterator();
 
-        while (itTopicBuffer.hasNext()) {
+        while (itRegisteredNodes.hasNext()) {
 
-            byte[] currentMessage = itTopicBuffer.next();
+            Socket currentRegisteredNode = itRegisteredNodes.next();
 
-            while (itRegisteredNodes.hasNext()) {
-
-                Socket currentRegisteredNode = itRegisteredNodes.next();
-
-                if (currentRegisteredNode == null || currentRegisteredNode.isClosed()) {
-                    itRegisteredNodes.remove();
-                } else {
-                    currentRegisteredNode.getOutputStream().write(currentMessage);
-                }
-
+            try {
+                currentRegisteredNode.getOutputStream().write(message);
+                currentRegisteredNode.getOutputStream().flush();
+            } catch (Exception ex) {
                 itRegisteredNodes.remove();
-
             }
 
         }
@@ -105,20 +57,8 @@ public class Topic extends Thread {
         registeredNodes.add(node);
     }
 
-    public Socket getPublisherNode() {
-        return publisherNode;
+    public String getTopicType() {
+        return topicType;
     }
 
-    public void setPublisherNode(Socket publisherNode) throws IOException {
-        
-        if(publisherNode != null){
-            publisherNode.close();
-        }
-        
-        this.publisherNode = publisherNode;
-        
-        this.start();
-        
-    }
-    
 }
