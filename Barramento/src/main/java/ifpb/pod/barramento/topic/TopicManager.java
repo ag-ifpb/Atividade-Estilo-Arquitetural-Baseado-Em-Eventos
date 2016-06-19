@@ -5,7 +5,7 @@
  */
 package ifpb.pod.barramento.topic;
 
-import ifpb.pod.barramento.Enums.TopicTypes;
+import ifpb.pod.barramento.enums.TopicTypes;
 import java.io.IOException;
 import java.net.Socket;
 
